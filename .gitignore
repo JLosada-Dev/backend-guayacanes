@@ -1,0 +1,60 @@
+# Python
+**/__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Environments
+.env
+.venv
+venv/
+ENV/
+env/
+pythonv/
+**/venv/
+**/.venv/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Project specific
+media_local/
+db.sqlite3
+*.log
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Assistant settings
+**/.claude/
+
+# Local data
+data/
+
+# Geographic data (managed separately via Drive)
+guayacanes_docs/
+
+# Local settings (contains dev credentials)
+config/settings/local.py
