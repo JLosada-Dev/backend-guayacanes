@@ -56,9 +56,21 @@ Crear el archivo en la ruta `config/settings/local.py`. A continuación un ejemp
 
 ```python
 from .base import *
-from decouple import config
+from decouple import config, Csv
 
 DEBUG = True
+
+# GDAL / GEOS — GeoDjango necesita saber dónde están las librerías del sistema.
+# brew install gdal instala en /opt/homebrew/opt/gdal/lib/ (macOS Apple Silicon).
+# Si tu ruta es distinta, ajusta aquí o define la variable en .env.
+GDAL_LIBRARY_PATH = config(
+    'GDAL_LIBRARY_PATH',
+    default='/opt/homebrew/opt/gdal/lib/libgdal.dylib',
+)
+GEOS_LIBRARY_PATH = config(
+    'GEOS_LIBRARY_PATH',
+    default='/opt/homebrew/opt/geos/lib/libgeos_c.dylib',
+)
 
 # En desarrollo puede dejarse este default. NUNCA usar en producción.
 SECRET_KEY = config('SECRET_KEY', default='django-insecure-local-dev-key-change-in-production')
@@ -82,6 +94,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 ```
 
 > **Notas:**
+> - **GDAL_LIBRARY_PATH / GEOS_LIBRARY_PATH:** GeoDjango necesita estas librerías del sistema. En macOS con Apple Silicon, brew las instala en `/opt/homebrew/opt/gdal/lib/` y `/opt/homebrew/opt/geos/lib/`. Si usas Intel Mac la ruta será `/usr/local/opt/...`. En Linux normalmente no hace falta configurarlas porque Django las encuentra automáticamente. Si tu ruta es diferente, puedes sobreescribirla en `.env` (ej: `GDAL_LIBRARY_PATH=/otra/ruta/libgdal.dylib`).
 > - Los valores de BD deben coincidir con los del `.env` o, si usas Docker, con los definidos en `docker-compose.yml`.
 > - `EMAIL_BACKEND` apunta a la consola en local — los emails se imprimen en la terminal en lugar de enviarse.
 > - Si necesitas sobreescribir cualquier otra cosa para tu entorno (caché, storage, etc.) hazlo aquí, nunca en `base.py`.
