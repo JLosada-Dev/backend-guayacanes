@@ -27,3 +27,23 @@
 
 ## Variable de entorno
 base_url = http://localhost:8000
+
+## Campos de contenido informativo
+
+### GET /api/v1/core/services/
+El campo `content` incluye texto editorial para el portal ciudadano:
+- `icon` — nombre del ícono Lucide (ej: `trash-2`, `leaf`)
+- `summary` — descripción corta (máx 300 chars)
+- `full_description` — descripción completa del servicio
+- `frequency` — frecuencia del servicio
+- `citizen_rights` — derechos del ciudadano según PPS 2024
+
+### GET /api/v1/core/aspects/?service=\<slug\>
+El campo `content` explica el aspecto al ciudadano:
+- `icon` — nombre del ícono Lucide
+- `what_is` — qué es este problema y cuándo ocurre
+- `how_to_evidence` — cómo documentarlo con fotos
+- `response_time` — tiempo de respuesta según contrato
+
+> El campo `content` retorna `null` hasta que un líder de operaciones
+> cargue el texto desde el admin de Django.
