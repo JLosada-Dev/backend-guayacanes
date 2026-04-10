@@ -12,6 +12,10 @@
 | GET | /api/v1/urbaser/complaints/{id}/ | Detalle denuncia |
 | GET | /api/v1/urbaser/complaints/geojson/ | Mapa GeoJSON |
 | POST | /api/v1/urbaser/evidence/ | Subir foto |
+| GET | /api/v1/urbaser/alerts/ | Alertas SLA (filtro: violation, service_slug, complaint_id) |
+| GET | /api/v1/urbaser/alerts/{id}/ | Detalle alerta SLA |
+| GET | /api/v1/urbaser/metrics/ | Métricas heatmap por comuna (filtro: service_slug, period) |
+| GET | /api/v1/urbaser/metrics/{id}/ | Detalle métrica de una comuna |
 
 ## Importar en Postman
 1. Abrir Postman
@@ -47,3 +51,19 @@ El campo `content` explica el aspecto al ciudadano:
 
 > El campo `content` retorna `null` hasta que un líder de operaciones
 > cargue el texto desde el admin de Django.
+
+## Endpoints de auditoría SLA
+
+### GET /api/v1/urbaser/alerts/
+Alertas generadas automáticamente por el pipeline PostGIS al crear una denuncia.
+- `violation` — `true` si hay incumplimiento SLA
+- `distance_meters` — distancia en metros reales (EPSG:3116) entre denuncia y ruta
+- `days_since_intervention` — solo zonas verdes: días desde el último corte
+- `confidence` — `high` (GPS) / `medium` (manual) / `low` (centroide)
+- `macroroute_code` — código oficial PPS (B211, 611, etc.)
+
+### GET /api/v1/urbaser/metrics/
+Caché estadístico por comuna y servicio. Alimenta el heatmap del dashboard.
+- `violation_rate` — fracción 0.0–1.0 (violations / alerts del mes)
+- `period` — primer día del mes calculado (ej: `2026-04-01`)
+- Colores sugeridos: `> 0.70` rojo · `> 0.40` naranja · `≤ 0.40` verde

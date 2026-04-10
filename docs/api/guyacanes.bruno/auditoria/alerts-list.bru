@@ -1,0 +1,24 @@
+meta {
+  name: Listar alertas SLA
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{base_url}}/api/v1/urbaser/alerts/
+  body: none
+  auth: none
+}
+
+params:query {
+  ~violation: true
+  ~service_slug: sweeping-cleaning
+  ~complaint_id: 7
+  ~confidence: high
+}
+
+docs {
+  Lista alertas SLA generadas automáticamente por el pipeline PostGIS.
+  Filtros: violation (true/false), service_slug, route_type, confidence, complaint_id
+  Ordenamiento: generated_at, violation, service_slug
+}

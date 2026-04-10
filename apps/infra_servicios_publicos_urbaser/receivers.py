@@ -10,7 +10,7 @@ Flujo:
     → recalcular CommuneMetric
 """
 from django.utils import timezone
-from django.contrib.gis.measure import D
+from django.contrib.gis.db.models.functions import Transform
 
 from .signals import complaint_created
 from .models import (
@@ -84,12 +84,18 @@ def _recalculate_commune_metric(commune_id, service_slug):
 def _process_sweeping(complaint_id, location, created_at, confidence, commune_id):
     """
     Cruce SLA para barrido.
-    Busca microrutas a ≤50m de la denuncia y verifica ventana horaria.
+    Transforma a EPSG:3116 (Colombia Oeste metros) para medir en metros reales.
     """
+    # Transformar punto a sistema métrico colombiano
+    location_transformed = location.transform(3116, clone=True)
+
     nearby = SweepingMicroRoute.objects.filter(
         active=True,
         geom__isnull=False,
-        geom__dwithin=(location, D(m=50)),
+    ).annotate(
+        geom_m=Transform('geom', 3116)
+    ).filter(
+        geom_m__dwithin=(location_transformed, 50)
     ).select_related('macroroute')
 
     if not nearby.exists():
@@ -98,15 +104,17 @@ def _process_sweeping(complaint_id, location, created_at, confidence, commune_id
     complaint_hour = created_at.hour
 
     for microroute in nearby:
-        macro      = microroute.macroroute
-        violation  = False
+        macro     = microroute.macroroute
+        violation = False
 
         if macro.start_time:
             start_hour = macro.start_time.hour
             end_hour   = macro.end_time.hour if macro.end_time else 23
             violation  = not (start_hour <= complaint_hour <= end_hour)
 
-        distance = location.distance(microroute.geom) * 111320
+        # Distancia en metros reales
+        geom_m   = microroute.geom.transform(3116, clone=True)
+        distance = location_transformed.distance(geom_m)
 
         SLAAlert.objects.create(
             complaint_id    = complaint_id,
@@ -125,12 +133,17 @@ def _process_sweeping(complaint_id, location, created_at, confidence, commune_id
 def _process_green_zones(complaint_id, location, confidence, commune_id):
     """
     Cruce SLA para zonas verdes.
-    Busca zonas a ≤30m y verifica si el ciclo de corte está vencido.
+    Transforma a EPSG:3116 para medir en metros reales.
     """
+    location_transformed = location.transform(3116, clone=True)
+
     nearby = GreenZone.objects.filter(
         active=True,
         geom__isnull=False,
-        geom__dwithin=(location, D(m=30)),
+    ).annotate(
+        geom_m=Transform('geom', 3116)
+    ).filter(
+        geom_m__dwithin=(location_transformed, 30)
     )
 
     if not nearby.exists():

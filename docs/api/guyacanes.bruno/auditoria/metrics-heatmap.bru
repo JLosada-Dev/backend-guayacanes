@@ -1,0 +1,29 @@
+meta {
+  name: Métricas heatmap comunas
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{base_url}}/api/v1/urbaser/metrics/
+  body: none
+  auth: none
+}
+
+params:query {
+  ~service_slug: sweeping-cleaning
+  ~period: 2026-04-01
+  ~commune_id: 4
+}
+
+docs {
+  Métricas precalculadas por comuna para el heatmap del dashboard.
+  Recalculado automáticamente tras cada nueva SLAAlert.
+
+  violation_rate:
+    > 0.70 → rojo   (crítico)
+    > 0.40 → naranja (atención)
+    ≤ 0.40 → verde  (conforme)
+
+  Filtros: service_slug, period (YYYY-MM-DD primer día del mes), commune_id
+}

@@ -5,11 +5,13 @@ from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
 
-from .models import Complaint, Evidence
+from .models import Complaint, Evidence, SLAAlert, CommuneMetric
 from .serializers import (
     ComplaintSerializer,
     ComplaintGeoSerializer,
     EvidenceSerializer,
+    SLAAlertSerializer,
+    CommuneMetricSerializer,
 )
 
 
@@ -60,3 +62,37 @@ class EvidenceViewSet(
     queryset         = Evidence.objects.all()
     serializer_class = EvidenceSerializer
     parser_classes   = [MultiPartParser, FormParser, JSONParser]
+
+
+class SLAAlertViewSet(
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    viewsets.GenericViewSet,
+):
+    """
+    GET /api/v1/urbaser/alerts/           — listado de alertas SLA
+    GET /api/v1/urbaser/alerts/{id}/      — detalle
+    GET /api/v1/urbaser/alerts/?violation=true  — solo incumplimientos
+    """
+    queryset         = SLAAlert.objects.all()
+    serializer_class = SLAAlertSerializer
+    filter_backends  = [DjangoFilterBackend, OrderingFilter]
+    filterset_fields = ['violation', 'service_slug', 'route_type', 'confidence', 'complaint_id']
+    ordering_fields  = ['generated_at', 'violation', 'service_slug']
+
+
+class CommuneMetricViewSet(
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    viewsets.GenericViewSet,
+):
+    """
+    GET /api/v1/urbaser/metrics/          — métricas por comuna (heatmap)
+    GET /api/v1/urbaser/metrics/?service_slug=sweeping-cleaning
+    GET /api/v1/urbaser/metrics/?period=2026-04-01
+    """
+    queryset         = CommuneMetric.objects.all()
+    serializer_class = CommuneMetricSerializer
+    filter_backends  = [DjangoFilterBackend, OrderingFilter]
+    filterset_fields = ['service_slug', 'period', 'commune_id']
+    ordering_fields  = ['period', 'violation_rate', 'commune_id']

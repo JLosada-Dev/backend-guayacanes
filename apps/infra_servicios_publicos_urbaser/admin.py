@@ -3,6 +3,7 @@ from .models import (
     Complaint, Evidence,
     SweepingMacroRoute, SweepingMicroRoute,
     GreenZone, CuttingSchedule, Intervention,
+    SLAAlert, CommuneMetric,
 )
 
 
@@ -116,3 +117,39 @@ class InterventionAdmin(admin.ModelAdmin):
     list_filter   = ['intervention_type']
     ordering      = ['-execution_date']
     search_fields = ['zone__name', 'recorded_by']
+
+
+@admin.register(SLAAlert)
+class SLAAlertAdmin(admin.ModelAdmin):
+    list_display    = [
+        'id', 'complaint_id', 'service_slug', 'route_type',
+        'macroroute_code', 'violation', 'distance_meters', 'confidence', 'generated_at',
+    ]
+    list_filter     = ['violation', 'service_slug', 'route_type', 'confidence']
+    ordering        = ['-generated_at']
+    readonly_fields = [
+        'complaint_id', 'service_slug', 'route_type', 'route_id',
+        'macroroute_code', 'violation', 'distance_meters', 'days_since_intervention',
+        'confidence', 'generated_at',
+    ]
+    search_fields   = ['complaint_id', 'macroroute_code']
+
+    def has_add_permission(self, request):    return False
+    def has_change_permission(self, request, obj=None): return False
+
+
+@admin.register(CommuneMetric)
+class CommuneMetricAdmin(admin.ModelAdmin):
+    list_display    = [
+        'commune_name', 'service_slug', 'total_complaints',
+        'total_violations', 'violation_rate', 'period', 'updated_at',
+    ]
+    list_filter     = ['service_slug', 'period']
+    ordering        = ['-period', 'commune_id']
+    readonly_fields = [
+        'commune_id', 'commune_name', 'service_slug', 'total_complaints',
+        'total_alerts', 'total_violations', 'violation_rate', 'period', 'updated_at',
+    ]
+
+    def has_add_permission(self, request):    return False
+    def has_change_permission(self, request, obj=None): return False

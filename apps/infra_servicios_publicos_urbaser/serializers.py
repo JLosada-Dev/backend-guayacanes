@@ -3,7 +3,7 @@ from rest_framework_gis.serializers import GeoFeatureModelSerializer
 from django.contrib.gis.geos import Point
 
 from apps.core.models import Service, Aspect, Commune
-from .models import Complaint, Evidence
+from .models import Complaint, Evidence, SLAAlert, CommuneMetric
 
 
 class EvidenceSerializer(serializers.ModelSerializer):
@@ -95,6 +95,29 @@ class ComplaintSerializer(serializers.ModelSerializer):
                 )
 
         return data
+
+
+class SLAAlertSerializer(serializers.ModelSerializer):
+    class Meta:
+        model  = SLAAlert
+        fields = [
+            'id', 'complaint_id', 'service_slug',
+            'route_type', 'route_id', 'macroroute_code',
+            'violation', 'distance_meters', 'days_since_intervention',
+            'confidence', 'generated_at',
+        ]
+        read_only_fields = fields
+
+
+class CommuneMetricSerializer(serializers.ModelSerializer):
+    class Meta:
+        model  = CommuneMetric
+        fields = [
+            'id', 'commune_id', 'commune_name', 'service_slug',
+            'total_complaints', 'total_alerts', 'total_violations',
+            'violation_rate', 'period', 'updated_at',
+        ]
+        read_only_fields = fields
 
 
 class ComplaintGeoSerializer(GeoFeatureModelSerializer):
