@@ -1,0 +1,16 @@
+meta {
+  name: Servicios activos
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{base_url}}/api/v1/core/services/
+  body: none
+  auth: none
+}
+
+docs {
+  Retorna servicios activos para el formulario ciudadano.
+  Fase 1 activos: sweeping-cleaning, green-zones.
+}

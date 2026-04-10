@@ -1,0 +1,25 @@
+meta {
+  name: Crear denuncia centroide
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{base_url}}/api/v1/urbaser/complaints/
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "service_id": 2,
+    "aspect_id": 8,
+    "commune_id": 3,
+    "location_source": "centroid",
+    "description": "El césped del separador lleva más de 20 días sin cortar."
+  }
+}
+
+docs {
+  Sin GPS — el sistema usa el centroide de la comuna como fallback.
+}

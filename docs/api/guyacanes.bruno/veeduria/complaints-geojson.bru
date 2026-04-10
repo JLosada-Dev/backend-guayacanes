@@ -1,0 +1,15 @@
+meta {
+  name: Denuncias GeoJSON
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{base_url}}/api/v1/urbaser/complaints/geojson/
+  body: none
+  auth: none
+}
+
+docs {
+  GeoJSON FeatureCollection para el mapa del dashboard.
+}
