@@ -555,26 +555,59 @@ load_green_zones    ← combinar 4 shapefiles espacio público → urbaser_green
 | GET    | /api/v1/urbaser/complaints/geojson/ | Mapa GeoJSON          |
 | POST   | /api/v1/urbaser/evidence/           | Subir foto            |
 
+**App: infra_servicios_publicos_urbaser — Operaciones**
+
+```
+✓ SweepingMacroRoute + SweepingMicroRoute
+✓ GreenZone + CuttingSchedule + Intervention
+✓ load_sweeping (U18_VIAL.shp) — 8 macrorutas, 1,731 microrutas
+✓ Admin con GISModelAdmin + inlines
+```
+
+**App: infra_servicios_publicos_urbaser — Auditoría**
+
+```
+✓ SLAAlert + CommuneMetric
+✓ signals.py — complaint_created signal
+✓ receivers.py — cruce PostGIS EPSG:3116 metros reales
+✓ ST_DWithin barrido 50m + zonas verdes 30m
+✓ Recálculo síncrono de CommuneMetric
+✓ Admin read-only para SLAAlert y CommuneMetric
+✓ /api/v1/urbaser/alerts/ · /api/v1/urbaser/metrics/
+```
+
+### API v1 — endpoints completos
+
+| Método | URL                                 | Descripción                   |
+| ------ | ----------------------------------- | ----------------------------- |
+| GET    | /api/v1/core/services/              | Servicios activos + contenido |
+| GET    | /api/v1/core/aspects/?service=slug  | Aspectos + contenido          |
+| GET    | /api/v1/core/communes/              | 9 comunas                     |
+| POST   | /api/v1/urbaser/complaints/         | Crear denuncia                |
+| GET    | /api/v1/urbaser/complaints/         | Listar denuncias              |
+| GET    | /api/v1/urbaser/complaints/{id}/    | Detalle                       |
+| GET    | /api/v1/urbaser/complaints/geojson/ | Mapa GeoJSON                  |
+| POST   | /api/v1/urbaser/evidence/           | Subir foto                    |
+| GET    | /api/v1/urbaser/alerts/             | Alertas SLA                   |
+| GET    | /api/v1/urbaser/alerts/{id}/        | Detalle alerta                |
+| GET    | /api/v1/urbaser/metrics/            | Heatmap por comuna            |
+
+### Notas técnicas importantes
+
+- Distancias calculadas en EPSG:3116 (Colombia Oeste — metros reales)
+- Workaround de grados eliminado — Transform('geom', 3116) en queries
+- Mapeo Layer→macroruta pendiente de validar contra PDF oficial
+  VC1→611, VARIANT→B211, VAP-2→B212 son inferidos, no verificados
+- B213, 621, 631b, 117b, 127b tienen 0 microrutas — faltan layers en shapefile
+
 ### Pendiente ← SIGUIENTE
 
-**Operaciones**
+**Autenticación**
 
 ```
-□ SweepingMacroRoute + SweepingMicroRoute
-□ GreenZone + CuttingSchedule + Intervention
-□ load_sweeping (U18_VIAL.shp)
-□ load_green_zones (4 shapefiles espacio público)
-□ Admin con Leaflet para rutas y zonas verdes
-□ /api/v1/urbaser/routes/ endpoints
-```
-
-**Auditoría**
-
-```
-□ SLAAlert + CommuneMetric
-□ Signals: complaint_created → receivers PostGIS
-□ ST_DWithin barrido (50m) + zonas verdes (30m)
-□ /api/v1/urbaser/alerts/ · /heatmap/ · /summary/
+□ JWT con djangorestframework-simplejwt
+□ Permisos: ciudadano solo POST complaints
+□ Admin/supervisor puede ver todo
 ```
 
 **Barrios**
@@ -583,6 +616,13 @@ load_green_zones    ← combinar 4 shapefiles espacio público → urbaser_green
 □ Pendiente fuente confiable (OSM o Alcaldía)
 □ Neighborhood.geom = null=True esperando datos
 □ load_neighborhoods command
+```
+
+**Contenido informativo**
+
+```
+□ Líderes de operaciones cargan ServiceContent y AspectContent
+□ desde el admin de Django
 ```
 
 **Frontend**
