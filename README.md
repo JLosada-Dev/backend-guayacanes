@@ -15,10 +15,11 @@ detectar incumplimientos SLA automáticamente.
 
 ## Stack
 
-- **Backend:** Django 6 + DRF + GeoDjango
+- **Backend:** Django 6 + DRF + GeoDjango + djangorestframework-gis
 - **Base de datos:** PostgreSQL 16 + PostGIS 3.4
 - **Cache/Queue:** Redis 7
 - **Python:** 3.13.12 (gestionado con uv)
+- **Versiones exactas:** ver `docs/CONTEXT_GUYACANES.md`
 
 ---
 
@@ -30,7 +31,7 @@ detectar incumplimientos SLA automáticamente.
 git clone <url-del-repo>
 cd guyacanes
 
-# Levantar base de datos
+# Levantar base de datos y Redis
 docker compose up -d
 
 # Instalar dependencias
@@ -57,7 +58,7 @@ uv run python manage.py runserver 0.0.0.0:8000
 git clone <url-del-repo>
 cd guyacanes
 
-# Levantar base de datos
+# Levantar base de datos y Redis
 docker compose up -d
 
 # Entorno virtual
@@ -91,15 +92,15 @@ Copiar `.env.example` a `.env` y completar:
 
 | Variable | Requerida | Default |
 |----------|-----------|---------|
-| SECRET_KEY | Sí | — |
-| DEBUG | No | False |
-| ALLOWED_HOSTS | No | "" |
-| DB_NAME | Sí | — |
-| DB_USER | Sí | — |
-| DB_PASSWORD | Sí | — |
-| DB_HOST | No | localhost |
-| DB_PORT | No | 5432 |
-| CORS_ALLOWED_ORIGINS | No | "" |
+| `SECRET_KEY` | Sí | — |
+| `DEBUG` | No | `False` |
+| `ALLOWED_HOSTS` | No | `""` |
+| `DB_NAME` | Sí | — |
+| `DB_USER` | Sí | — |
+| `DB_PASSWORD` | Sí | — |
+| `DB_HOST` | No | `localhost` |
+| `DB_PORT` | No | `5432` |
+| `CORS_ALLOWED_ORIGINS` | No | `""` |
 
 ---
 
@@ -110,6 +111,7 @@ Copiar `.env.example` a `.env` y completar:
 - GDAL 3.8+ (requerido por GeoDjango)
   - macOS: `brew install gdal`
   - Ubuntu: `sudo apt install gdal-bin libgdal-dev`
+  - Windows: ver `docs/guia-dependencias.md`
 
 ---
 
@@ -118,18 +120,19 @@ Copiar `.env.example` a `.env` y completar:
 ```
 guyacanes/
   apps/
-    core/                                         # Catálogo transversal
-    infra_servicios_publicos_urbaser/             # Servicio de aseo
-    infra_servicios_publicos_urbaser_facturacion/ # Facturación (Fase 2)
+    core/                                         # Catálogo transversal (Commune, Neighborhood, Service, Aspect)
+    infra_servicios_publicos_urbaser/             # Servicio de aseo (Veeduría + Operaciones + Auditoría)
+    infra_servicios_publicos_urbaser_facturacion/ # Facturación (Fase 2 — pendiente)
   config/
     settings/
       base.py       # Settings comunes
       local.py      # Desarrollo
       production.py # Producción
-  data/shapefiles/  # Geodatos POT Popayán
-  docs/api/         # Colecciones Bruno y Postman
+  data/shapefiles/  # Geodatos POT Popayán (U2_COMUNAS.shp, U18_VIAL.shp, etc.)
+  docs/             # Documentación técnica
+    api/            # Colecciones Bruno y Postman + referencia API
   fixtures/         # Datos iniciales del catálogo
-  media_local/      # Archivos subidos en desarrollo
+  media_local/      # Archivos subidos en desarrollo (evidencias)
 ```
 
 ---
@@ -137,6 +140,8 @@ guyacanes/
 ## API v1
 
 Base URL: `http://localhost:8000/api/v1/`
+
+Ver referencia completa en `docs/api/README.md`.
 
 ### Core
 
@@ -156,24 +161,53 @@ Base URL: `http://localhost:8000/api/v1/`
 | GET | `/urbaser/complaints/geojson/` | Denuncias como GeoJSON |
 | POST | `/urbaser/evidence/` | Subir foto de evidencia |
 
-### Auditoría
+### Auditoría SLA
 
 | Método | Endpoint | Descripción |
 |--------|----------|-------------|
 | GET | `/urbaser/alerts/` | Alertas SLA generadas |
 | GET | `/urbaser/alerts/<id>/` | Detalle de alerta |
 | GET | `/urbaser/metrics/` | Métricas heatmap por comuna |
+| GET | `/urbaser/metrics/<id>/` | Detalle de métrica |
 
-Ver colecciones completas en `docs/api/`.
+### Filtros principales
+
+**Complaints:** `?status=received` · `?service_slug=sweeping-cleaning` · `?commune_id=4` · `?is_rural=false` · `?search=limpieza` · `?ordering=-created_at`
+
+**Alerts:** `?violation=true` · `?service_slug=green-zones` · `?route_type=sweeping_microroute` · `?confidence=high` · `?complaint_id=42`
+
+**Metrics:** `?service_slug=sweeping-cleaning` · `?period=2026-04-01` · `?commune_id=4`
 
 ---
 
 ## Management commands
 
-| Comando | Descripción |
-|---------|-------------|
-| `load_communes` | Carga 9 comunas desde U2_COMUNAS.shp |
-| `load_sweeping` | Carga rutas de barrido desde U18_VIAL.shp |
+| Comando | Descripción | Fuente |
+|---------|-------------|--------|
+| `load_communes` | Carga 9 comunas desde shapefile POT | `data/shapefiles/U2_COMUNAS.shp` |
+| `load_sweeping` | Carga 8 macrorutas + ~1,731 microrutas de barrido | `data/shapefiles/U18_VIAL.shp` |
+
+```bash
+# Con uv
+uv run python manage.py load_communes
+uv run python manage.py load_sweeping
+
+# Con pip
+python manage.py load_communes
+python manage.py load_sweeping
+```
+
+---
+
+## Admin
+
+Disponible en `http://localhost:8000/admin`
+
+```bash
+python manage.py createsuperuser
+```
+
+Ver `docs/admin-guide.md` para la guía completa de modelos, permisos, fieldsets e inlines.
 
 ---
 
@@ -193,7 +227,15 @@ git add pyproject.toml uv.lock requirements.txt requirements-dev.txt
 
 ---
 
-## Admin
+## Documentación
 
-Disponible en `http://localhost:8000/admin`
-Crear superusuario: `python manage.py createsuperuser`
+| Documento | Descripción |
+|-----------|-------------|
+| `docs/api/README.md` | Referencia completa de la API v1 — endpoints, filtros, ejemplos, campos choice |
+| `docs/admin-guide.md` | Guía del panel de administración Django |
+| `docs/CONTEXT_GUYACANES.md` | Arquitectura completa, modelos, estado del proyecto |
+| `docs/rutas-y-servicios.md` | Contexto de negocio — rutas PPS 2024, SLA, servicios |
+| `docs/geodatos.md` | Inventario de shapefiles, CRS, comandos de carga |
+| `docs/guia-dependencias.md` | Setup detallado con uv, GDAL, VS Code |
+| `docs/api/guyacanes.bruno/` | Colección Bruno (recomendada) |
+| `docs/api/guyacanes.postman_collection.json` | Colección Postman |

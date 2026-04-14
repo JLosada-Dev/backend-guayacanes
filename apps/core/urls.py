@@ -2,6 +2,8 @@ from django.urls import path
 from rest_framework import serializers
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from drf_spectacular.utils import extend_schema, OpenApiParameter
+from drf_spectacular.types import OpenApiTypes
 
 from .models import Service, Aspect, Commune, ServiceContent, AspectContent
 
@@ -40,26 +42,45 @@ class CommuneSerializer(serializers.ModelSerializer):
         fields = ['id', 'number', 'name', 'area_hectares']
 
 
+@extend_schema(
+    summary='Listar servicios activos',
+    description=(
+        'Retorna los servicios públicos activos con su contenido informativo. '
+        'Usado por el formulario ciudadano para seleccionar el tipo de servicio a denunciar. '
+        'Ordenados por el campo `order`.'
+    ),
+    responses=ServiceSerializer(many=True),
+    tags=['Core / Catálogo'],
+)
 @api_view(['GET'])
 def services_list(request):
-    """
-    GET /api/v1/core/services/
-    Servicios activos con su contenido informativo.
-    Usado por el formulario ciudadano.
-    """
     services = Service.objects.filter(
         active=True
     ).select_related('content').order_by('order')
     return Response(ServiceSerializer(services, many=True).data)
 
 
+@extend_schema(
+    summary='Listar aspectos activos',
+    description=(
+        'Retorna los aspectos (subcategorías) de los servicios con su contenido informativo. '
+        'Cuando el ciudadano selecciona un aspecto en el formulario, ve la explicación de qué es '
+        'y cómo evidenciarlo. Filtrar por `service` para obtener solo los aspectos de un servicio.'
+    ),
+    parameters=[
+        OpenApiParameter(
+            name='service',
+            type=OpenApiTypes.STR,
+            location=OpenApiParameter.QUERY,
+            description='Slug del servicio para filtrar aspectos (ej: `sweeping-cleaning`, `green-zones`).',
+            required=False,
+        ),
+    ],
+    responses=AspectSerializer(many=True),
+    tags=['Core / Catálogo'],
+)
 @api_view(['GET'])
 def aspects_list(request):
-    """
-    GET /api/v1/core/aspects/?service=sweeping-cleaning
-    Aspectos activos con su contenido informativo.
-    Cuando el ciudadano selecciona un aspecto ve la explicación.
-    """
     service_slug = request.query_params.get('service')
     aspects = Aspect.objects.filter(
         active=True
@@ -69,12 +90,14 @@ def aspects_list(request):
     return Response(AspectSerializer(aspects, many=True).data)
 
 
+@extend_schema(
+    summary='Listar comunas de Popayán',
+    description='Retorna las 9 comunas de Popayán ordenadas por número. Usadas para geolocalizar denuncias.',
+    responses=CommuneSerializer(many=True),
+    tags=['Core / Catálogo'],
+)
 @api_view(['GET'])
 def communes_list(request):
-    """
-    GET /api/v1/core/communes/
-    9 comunas de Popayán.
-    """
     communes = Commune.objects.all().order_by('number')
     return Response(CommuneSerializer(communes, many=True).data)
 

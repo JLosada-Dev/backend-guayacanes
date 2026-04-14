@@ -2,7 +2,7 @@
 
 # Sistema de Servicios Públicos — Alcaldía de Popayán
 
-# Versión definitiva — Marzo 2026
+# Versión definitiva — Abril 2026
 
 ---
 
@@ -193,7 +193,7 @@ infra_servicios_publicos_urbaser/
   management/
     commands/
       load_sweeping.py
-      load_green_zones.py
+      load_green_zones.py  ← PENDIENTE IMPLEMENTAR
 ```
 
 ### Prefijos de tabla: urbaser\_\*
@@ -482,12 +482,12 @@ Inventario arbóreo: 18,123 árboles — Fase 2
 ## MANAGEMENT COMMANDS
 
 ```
-load_communes       ← U2_COMUNAS.shp → core_commune
-load_neighborhoods  ← shapefile DANE → core_neighborhood (pendiente)
+load_communes       ← U2_COMUNAS.shp → core_commune              ✓ IMPLEMENTADO
 load_sweeping       ← U18_VIAL.shp → urbaser_sweeping_macroroute + microroute
-                      bulk_create batch_size=500
+                      bulk_create batch_size=500                  ✓ IMPLEMENTADO
+load_neighborhoods  ← shapefile DANE → core_neighborhood          □ PENDIENTE
 load_green_zones    ← combinar 4 shapefiles espacio público → urbaser_green_zone
-                      reproyectar + cruzar con cronograma PDF por nombre
+                      reproyectar + cruzar con cronograma PDF     □ PENDIENTE
 ```
 
 ---
@@ -537,9 +537,14 @@ load_green_zones    ← combinar 4 shapefiles espacio público → urbaser_green
 **Documentación**
 
 ```
-✓ docs/api/README.md
+✓ README.md (setup, API summary, filtros, referencia docs)
+✓ docs/api/README.md (referencia completa API v1 — filtros, ejemplos, campos choice)
 ✓ docs/api/guyacanes.postman_collection.json
 ✓ docs/api/guyacanes.bruno/ (colección Bruno completa)
+✓ docs/admin-guide.md (guía completa del panel admin — inlines, permisos, fieldsets)
+✓ docs/rutas-y-servicios.md (contexto de negocio PPS 2024)
+✓ docs/geodatos.md (inventario shapefiles, CRS, comandos)
+✓ docs/guia-dependencias.md (setup uv, GDAL, VS Code)
 ```
 
 ### API v1 — endpoints activos
@@ -576,7 +581,7 @@ load_green_zones    ← combinar 4 shapefiles espacio público → urbaser_green
 ✓ /api/v1/urbaser/alerts/ · /api/v1/urbaser/metrics/
 ```
 
-### API v1 — endpoints completos
+### API v1 — endpoints completos (Fase 1)
 
 | Método | URL                                 | Descripción                   |
 | ------ | ----------------------------------- | ----------------------------- |
@@ -591,6 +596,9 @@ load_green_zones    ← combinar 4 shapefiles espacio público → urbaser_green
 | GET    | /api/v1/urbaser/alerts/             | Alertas SLA                   |
 | GET    | /api/v1/urbaser/alerts/{id}/        | Detalle alerta                |
 | GET    | /api/v1/urbaser/metrics/            | Heatmap por comuna            |
+| GET    | /api/v1/urbaser/metrics/{id}/       | Detalle métrica comuna        |
+
+Ver filtros, ejemplos de respuesta y campos choice en `docs/api/README.md`.
 
 ### Notas técnicas importantes
 

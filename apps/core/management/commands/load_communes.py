@@ -19,7 +19,7 @@ from django.core.management.base import BaseCommand
 from apps.core.models import Commune
 
 DEFAULT_SHAPEFILE = (
-    Path.home()
+    Path(__file__).resolve().parents[4]
     / 'guayacanes_docs'
     / 'SHAPESPOT'
     / 'SHAPES POT'

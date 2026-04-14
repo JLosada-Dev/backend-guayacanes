@@ -27,7 +27,7 @@ from apps.infra_servicios_publicos_urbaser.models import (
 )
 
 DEFAULT_SHAPEFILE = (
-    Path.home()
+    Path(__file__).resolve().parents[4]
     / 'guayacanes_docs'
     / 'SHAPESPOT'
     / 'SHAPES POT'

@@ -23,6 +23,7 @@ INSTALLED_APPS = [
     'rest_framework_gis',
     'corsheaders',
     'django_filters',
+    'drf_spectacular',
     # Local
     'apps.core',
     'apps.infra_servicios_publicos_urbaser',
@@ -79,4 +80,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Guayacanes API',
+    'DESCRIPTION': 'API para gestión de infraestructura de servicios públicos - Alcaldía',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
 }
