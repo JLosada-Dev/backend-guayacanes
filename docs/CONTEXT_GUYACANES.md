@@ -482,12 +482,12 @@ Inventario arbóreo: 18,123 árboles — Fase 2
 ## MANAGEMENT COMMANDS
 
 ```
-load_communes       ← U2_COMUNAS.shp → core_commune              ✓ IMPLEMENTADO
-load_sweeping       ← U18_VIAL.shp → urbaser_sweeping_macroroute + microroute
-                      bulk_create batch_size=500                  ✓ IMPLEMENTADO
-load_neighborhoods  ← shapefile DANE → core_neighborhood          □ PENDIENTE
-load_green_zones    ← combinar 4 shapefiles espacio público → urbaser_green_zone
-                      reproyectar + cruzar con cronograma PDF     □ PENDIENTE
+load_communes       ← U2_COMUNAS.shp → core_commune                        ✓ IMPLEMENTADO
+load_sweeping       ← U18_VIAL.shp → urbaser_sweeping_macroroute/microroute ✓ IMPLEMENTADO
+load_green_zones    ← 5 shapefiles combinados → urbaser_green_zone          ✓ IMPLEMENTADO
+                      U19_ESPACIO_PUBLICO 1,2,3,5 + SEPARADOR (313 polígonos)
+seed_complaints     ← 14 denuncias de prueba (dispara pipeline SLA)         ✓ IMPLEMENTADO
+load_neighborhoods  ← shapefile DANE MGN → core_neighborhood                □ PENDIENTE
 ```
 
 ---
@@ -566,6 +566,7 @@ load_green_zones    ← combinar 4 shapefiles espacio público → urbaser_green
 ✓ SweepingMacroRoute + SweepingMicroRoute
 ✓ GreenZone + CuttingSchedule + Intervention
 ✓ load_sweeping (U18_VIAL.shp) — 8 macrorutas, 1,731 microrutas
+✓ load_green_zones (5 shapefiles) — 313 zonas verdes con geometría
 ✓ Admin con GISModelAdmin + inlines
 ```
 
@@ -609,6 +610,14 @@ Ver filtros, ejemplos de respuesta y campos choice en `docs/api/README.md`.
 - B213, 621, 631b, 117b, 127b tienen 0 microrutas — faltan layers en shapefile
 
 ### Pendiente ← SIGUIENTE
+
+**Datos de demo validados**
+
+```
+✓ 14 denuncias de prueba → 27 alertas → 2 violations → 5 métricas
+✓ Pipeline SLA end-to-end validado (barrido + zonas verdes)
+✓ Make targets: make dev · make demo · make data · make seed
+```
 
 **Autenticación**
 

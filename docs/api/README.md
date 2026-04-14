@@ -31,6 +31,29 @@ Base URL: `http://localhost:8000/api/v1/`
 3. Seleccionar carpeta `docs/api/guyacanes.bruno/`
 4. Activar environment `local`
 
+**Requests incluidos (13):**
+
+```
+core/
+  services.bru              GET /api/v1/core/services/
+  aspects.bru               GET /api/v1/core/aspects/?service=<slug>
+  communes.bru              GET /api/v1/core/communes/
+
+veeduria/
+  complaint-gps.bru         POST /complaints/ (con GPS)
+  complaint-centroid.bru    POST /complaints/ (fallback centroide)
+  complaints-list.bru       GET /complaints/ (con filtros)
+  complaint-detail.bru      GET /complaints/{id}/
+  complaints-geojson.bru    GET /complaints/geojson/
+  evidence-upload.bru       POST /evidence/ (multipart)
+
+auditoria/
+  alerts-list.bru           GET /alerts/ (con filtros)
+  alerts-detail.bru         GET /alerts/{id}/
+  metrics-heatmap.bru       GET /metrics/
+  metrics-detail.bru        GET /metrics/{id}/
+```
+
 ### Importar en Postman
 1. Abrir Postman → Import → Upload Files
 2. Seleccionar `docs/api/guyacanes.postman_collection.json`

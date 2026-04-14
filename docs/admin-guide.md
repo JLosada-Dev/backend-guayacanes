@@ -167,7 +167,7 @@ Microrutas individuales del vial (LineStrings del U18_VIAL.shp).
 
 ### GreenZone (GISModelAdmin)
 
-Zonas verdes del espacio público POT. Geometría pendiente hasta que se ejecute `load_green_zones`.
+Zonas verdes del espacio público POT. **313 zonas cargadas** desde 5 shapefiles combinados (parques, nodos, corredores verdes, separadores).
 
 - **Lista:** `external_id`, nombre, tipo de zona, área m², ciclo días, activo
 - **Filtros:** `zone_type`, `active`

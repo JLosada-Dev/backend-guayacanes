@@ -15,35 +15,55 @@ guayacanes_docs/SHAPESPOT/SHAPES POT/
 | Capa | Features | Tabla destino | Estado | Comando |
 |------|----------|--------------|--------|---------|
 | `U2_COMUNAS/U2_COMUNAS.shp` | 9 polígonos | `core_commune` | ✓ Cargado | `load_communes` |
-| `U18_VIAL/U18_VIAL.shp` | ~3,800 LineStrings | `urbaser_sweeping_microroute` | Pendiente | `load_sweeping` (por crear) |
-| `U19_ESPACIO PUBLICO/U19_ESPACIO_PUBLICO2.shp` | 11 polígonos | `urbaser_green_zone` | Pendiente | `load_green_zones` (por crear) |
-| `U19_ESPACIO PUBLICO/U19_ESPACIO_PUBLICO3.shp` | 96 polígonos | `urbaser_green_zone` | Pendiente | `load_green_zones` (por crear) |
-| `U19_ESPACIO PUBLICO/U19_ESPACIO_PUBLICO5.shp` | 72 polígonos | `urbaser_green_zone` | Pendiente | `load_green_zones` (por crear) |
-| `U1_POPAYAN BASE/SEPARADOR.shp` | 132 polígonos | `urbaser_green_zone` | Pendiente | `load_green_zones` (por crear) |
+| `U18_VIAL/U18_VIAL.shp` | 3,800 LineStrings | `urbaser_sweeping_microroute` | ✓ Cargado (1,731) | `load_sweeping` |
+| `U-19 ESPACIO PUBLICO/U19_ESPACIO_PUBLICO1.shp` | 2 polígonos | `urbaser_green_zone` | ✓ Cargado | `load_green_zones` |
+| `U-19 ESPACIO PUBLICO/U19_ESPACIO_PUBLICO2.shp` | 11 polígonos | `urbaser_green_zone` | ✓ Cargado | `load_green_zones` |
+| `U-19 ESPACIO PUBLICO/U19_ESPACIO_PUBLICO3.shp` | 96 polígonos | `urbaser_green_zone` | ✓ Cargado | `load_green_zones` |
+| `U-19 ESPACIO PUBLICO/U19_ESPACIO_PUBLICO5.shp` | 72 polígonos | `urbaser_green_zone` | ✓ Cargado | `load_green_zones` |
+| `U1_POPAYAN BASE/SEPARADOR.shp` | 132 polígonos | `urbaser_green_zone` | ✓ Cargado | `load_green_zones` |
 
-> Las 4 capas de espacio público se cargan juntas en `urbaser_green_zone` (total ~311 polígonos).
-> Hay que cruzarlos con el cronograma de cesped PDF para asignar `cycle_days` y nombre.
+> Las 5 capas de espacio público se cargan juntas en `urbaser_green_zone` (**313 polígonos en BD**).
+> `external_id` se genera por rango según la fuente (10001+ EP1, 20001+ EP2, 30001+ EP3, 50001+ EP5, 90001+ SEPARADOR).
+> `cycle_days=11` por defecto (PPS 2024). Los nombres vienen del campo `NOMBRE` cuando existe (solo EP3), o se generan como `<tipo> NNN`.
 
 ---
 
-## Cargar comunas (ya implementado)
+## Cargar comunas
 
 ```bash
-# Ruta por defecto (dentro del repo)
 uv run python manage.py load_communes
-
-# Ruta explícita
-uv run python manage.py load_communes \
-  --shapefile "guayacanes_docs/SHAPESPOT/SHAPES POT/U2_COMUNAS/U2_COMUNAS.shp"
-
-# Recargar desde cero
-uv run python manage.py load_communes --clear
+uv run python manage.py load_communes --clear   # recargar desde cero
+uv run python manage.py load_communes --shapefile "ruta/custom.shp"
 ```
 
-Verifica:
+## Cargar rutas de barrido
+
 ```bash
-docker compose exec db psql -U guyacanes -d guyacanes_dev -c \
-  "SELECT number, name, area_hectares FROM core_commune ORDER BY number;"
+uv run python manage.py load_sweeping
+uv run python manage.py load_sweeping --clear
+```
+
+Carga las 8 macrorutas del PPS 2024 con horarios fijos (start_time/end_time) y
+asigna las 1,731 microrutas al macroruta correspondiente según el campo `Layer`
+del shapefile.
+
+## Cargar zonas verdes
+
+```bash
+uv run python manage.py load_green_zones
+uv run python manage.py load_green_zones --clear
+```
+
+Lee los 5 shapefiles del espacio público + separadores, los reproyecta a EPSG:4326,
+calcula el área en EPSG:3116 (metros reales), y crea 313 registros en
+`urbaser_green_zone`.
+
+## Shortcut con Make
+
+```bash
+make data    # todos los fixtures + geodatos de una vez
+make seed    # + 14 denuncias de prueba (dispara pipeline SLA)
+make demo    # migrate + data + seed (setup completo)
 ```
 
 ---
@@ -72,8 +92,8 @@ Referencial — no todas se usan en el sistema.
 | `U15_EXPANSION/` | Áreas de expansión urbana | — | No usado |
 | `U16_DESLIZAMIENTOS (1)/` | Riesgo de deslizamientos | — | No usado |
 | `U17_INUNDACIONES/` | Riesgo de inundaciones | — | No usado |
-| `U18_VIAL/` | Red vial — rutas de barrido | ~3,800 | Pendiente (operaciones) |
-| `U19_ESPACIO PUBLICO/` | Zonas verdes (4 subcapas) | ~311 total | Pendiente (operaciones) |
+| `U18_VIAL/` | Red vial — rutas de barrido | ~3,800 | ✓ Cargado (operaciones) |
+| `U-19 ESPACIO PUBLICO/` | Zonas verdes (5 subcapas) | 181 total | ✓ Cargado (operaciones) |
 | `U20_AREASESPECIALES/` | Áreas especiales | — | No usado |
 | `U21_CENTRALIDADES/` | Centralidades urbanas | — | No usado |
 | `U_23 INTERES AMBIENTAL/` | Interés ambiental | — | No usado |

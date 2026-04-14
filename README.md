@@ -184,17 +184,22 @@ Ver referencia completa en `docs/api/README.md`.
 
 | Comando | Descripción | Fuente |
 |---------|-------------|--------|
-| `load_communes` | Carga 9 comunas desde shapefile POT | `data/shapefiles/U2_COMUNAS.shp` |
-| `load_sweeping` | Carga 8 macrorutas + ~1,731 microrutas de barrido | `data/shapefiles/U18_VIAL.shp` |
+| `load_communes` | Carga 9 comunas desde shapefile POT | `U2_COMUNAS.shp` |
+| `load_sweeping` | Carga 8 macrorutas + 1,731 microrutas de barrido | `U18_VIAL.shp` |
+| `load_green_zones` | Carga 313 zonas verdes (parques, nodos, corredores, separadores) | 5 shapefiles U-19 + SEPARADOR |
+| `seed_complaints` | Genera 14 denuncias de prueba que disparan el pipeline SLA | — |
 
 ```bash
-# Con uv
+# Con Make (recomendado)
+make data   # carga fixtures + geodatos
+make seed   # denuncias de prueba
+make demo   # todo en uno (migrate + data + seed)
+
+# Con uv directamente
 uv run python manage.py load_communes
 uv run python manage.py load_sweeping
-
-# Con pip
-python manage.py load_communes
-python manage.py load_sweeping
+uv run python manage.py load_green_zones
+uv run python manage.py seed_complaints
 ```
 
 ---
@@ -233,9 +238,12 @@ git add pyproject.toml uv.lock requirements.txt requirements-dev.txt
 |-----------|-------------|
 | `docs/api/README.md` | Referencia completa de la API v1 — endpoints, filtros, ejemplos, campos choice |
 | `docs/admin-guide.md` | Guía del panel de administración Django |
+| `docs/demo-guide.md` | Guía paso a paso para correr el demo end-to-end |
+| `docs/plan-accion-fase1.md` | Plan de acción Fase 1 — gaps, pendientes, info faltante |
 | `docs/CONTEXT_GUYACANES.md` | Arquitectura completa, modelos, estado del proyecto |
 | `docs/rutas-y-servicios.md` | Contexto de negocio — rutas PPS 2024, SLA, servicios |
 | `docs/geodatos.md` | Inventario de shapefiles, CRS, comandos de carga |
+| `docs/barrios-opciones.md` | Opciones para cargar barrios (DANE MGN, OSM, Geofabrik) |
 | `docs/guia-dependencias.md` | Setup detallado con uv, GDAL, VS Code |
 | `docs/api/guyacanes.bruno/` | Colección Bruno (recomendada) |
 | `docs/api/guyacanes.postman_collection.json` | Colección Postman |

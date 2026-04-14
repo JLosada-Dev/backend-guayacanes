@@ -1,4 +1,4 @@
-.PHONY: up down dev reset logs shell migrate data
+.PHONY: up down dev reset logs shell migrate data seed demo
 
 # Levantar DB + Redis en background
 up:
@@ -24,6 +24,15 @@ data:
 	uv run python manage.py loaddata fixtures/core_aspects.json
 	uv run python manage.py load_communes
 	uv run python manage.py load_sweeping
+	uv run python manage.py load_green_zones
+
+# Denuncias de prueba para demo
+seed:
+	uv run python manage.py seed_complaints
+
+# Setup completo para demo (datos + seed)
+demo: reset seed
+	@echo "Demo listo: abrir /admin y /api/v1/"
 
 # Setup completo desde cero
 reset: migrate data
