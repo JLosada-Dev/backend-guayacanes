@@ -252,6 +252,7 @@ git add pyproject.toml uv.lock requirements.txt requirements-dev.txt
 | `docs/plan-demo-completo.md` | Plan de demo completo — integración backend + frontend |
 | `docs/frontend-changelog.md` | Changelog granular del frontend (cambios #1-#5 aplicados) |
 | `docs/estado-actual.md` | **Fuente única de verdad** — estado consolidado del proyecto |
+| `docs/estrategia-documentacion.md` | Decisión de dónde vive cada doc (backend vs frontend) |
 | `docs/CONTEXT_GUYACANES.md` | Arquitectura completa, modelos, estado del proyecto |
 | `docs/rutas-y-servicios.md` | Contexto de negocio — rutas PPS 2024, SLA, servicios |
 | `docs/geodatos.md` | Inventario de shapefiles, CRS, comandos de carga |
