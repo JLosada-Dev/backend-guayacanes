@@ -250,6 +250,8 @@ git add pyproject.toml uv.lock requirements.txt requirements-dev.txt
 | `docs/plan-accion-fase1.md` | Plan de acción Fase 1 — gaps, pendientes, info faltante |
 | `docs/changelog-fase-a.md` | Changelog de la Fase A — endpoints, fixes, Swagger, fixtures |
 | `docs/plan-demo-completo.md` | Plan de demo completo — integración backend + frontend |
+| `docs/frontend-changelog.md` | Changelog granular del frontend (cambios #1-#5 aplicados) |
+| `docs/estado-actual.md` | **Fuente única de verdad** — estado consolidado del proyecto |
 | `docs/CONTEXT_GUYACANES.md` | Arquitectura completa, modelos, estado del proyecto |
 | `docs/rutas-y-servicios.md` | Contexto de negocio — rutas PPS 2024, SLA, servicios |
 | `docs/geodatos.md` | Inventario de shapefiles, CRS, comandos de carga |

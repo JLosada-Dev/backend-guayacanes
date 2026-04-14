@@ -71,6 +71,18 @@ else:
 
 ## Nuevos comandos de gestión
 
+### Bug fix — `EvidenceSerializer` no aceptaba el campo `complaint`
+
+**Archivo:** [apps/infra_servicios_publicos_urbaser/serializers.py](../apps/infra_servicios_publicos_urbaser/serializers.py)
+
+**Problema:** el `Meta.fields` solo listaba `['id', 'image', 'uploaded_at']`, sin el FK `complaint`. DRF rechazaba/ignoraba el campo en el POST multipart, y el modelo intentaba persistir con `complaint_id=NULL` violando la constraint NOT NULL.
+
+**Fix:** agregado `'complaint'` a `fields`.
+
+**Descubierto durante:** implementación de la subida de evidencias en el frontend (ver `frontend-changelog.md` #5).
+
+---
+
 ### `load_cutting_schedule`
 
 **Archivo:** [apps/infra_servicios_publicos_urbaser/management/commands/load_cutting_schedule.py](../apps/infra_servicios_publicos_urbaser/management/commands/load_cutting_schedule.py)

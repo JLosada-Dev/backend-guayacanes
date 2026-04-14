@@ -9,7 +9,7 @@ from .models import Complaint, Evidence, SLAAlert, CommuneMetric
 class EvidenceSerializer(serializers.ModelSerializer):
     class Meta:
         model  = Evidence
-        fields = ['id', 'image', 'uploaded_at']
+        fields = ['id', 'complaint', 'image', 'uploaded_at']
         read_only_fields = ['uploaded_at']
 
 
