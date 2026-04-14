@@ -141,7 +141,15 @@ guyacanes/
 
 Base URL: `http://localhost:8000/api/v1/`
 
-Ver referencia completa en `docs/api/README.md`.
+### Documentación interactiva
+
+| URL | Descripción |
+|-----|-------------|
+| `/api/docs/` | Swagger UI — prueba interactiva |
+| `/api/redoc/` | ReDoc — referencia navegable |
+| `/api/schema/` | OpenAPI 3.0 schema (YAML) |
+
+Ver referencia conceptual completa en `docs/api/README.md`.
 
 ### Core
 
@@ -240,6 +248,8 @@ git add pyproject.toml uv.lock requirements.txt requirements-dev.txt
 | `docs/admin-guide.md` | Guía del panel de administración Django |
 | `docs/demo-guide.md` | Guía paso a paso para correr el demo end-to-end |
 | `docs/plan-accion-fase1.md` | Plan de acción Fase 1 — gaps, pendientes, info faltante |
+| `docs/changelog-fase-a.md` | Changelog de la Fase A — endpoints, fixes, Swagger, fixtures |
+| `docs/plan-demo-completo.md` | Plan de demo completo — integración backend + frontend |
 | `docs/CONTEXT_GUYACANES.md` | Arquitectura completa, modelos, estado del proyecto |
 | `docs/rutas-y-servicios.md` | Contexto de negocio — rutas PPS 2024, SLA, servicios |
 | `docs/geodatos.md` | Inventario de shapefiles, CRS, comandos de carga |

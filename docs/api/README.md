@@ -4,6 +4,20 @@ Base URL: `http://localhost:8000/api/v1/`
 
 ---
 
+## Documentación interactiva (Swagger / OpenAPI)
+
+Generada automáticamente con `drf-spectacular` a partir del código.
+
+| URL | Formato | Uso |
+|-----|---------|-----|
+| `http://localhost:8000/api/docs/` | Swagger UI | Navegación + prueba interactiva |
+| `http://localhost:8000/api/redoc/` | ReDoc | Lectura detallada de la API |
+| `http://localhost:8000/api/schema/` | OpenAPI 3.0 YAML | Schema descargable (integración con otras tools) |
+
+Los tres endpoints se actualizan automáticamente cada vez que se modifica un ViewSet o Serializer. No requieren sincronización manual con este archivo — este README es la referencia conceptual, Swagger es la referencia técnica.
+
+---
+
 ## Endpoints disponibles
 
 | Método | URL | Descripción |

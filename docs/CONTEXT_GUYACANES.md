@@ -642,12 +642,34 @@ Ver filtros, ejemplos de respuesta y campos choice en `docs/api/README.md`.
 □ desde el admin de Django
 ```
 
-**Frontend**
+**Frontend** (en `/frontend-guayacanes/`)
 
 ```
-□ Esperando template React + Vite + TypeScript
-□ Portal ciudadano — formulario denuncia
-□ Dashboard Alcaldía — heatmap + tabla alertas
+✓ React 19 + Vite 8 + TypeScript 6
+✓ Tailwind CSS 4 + lucide-react + react-leaflet
+✓ Estado: Zustand (complaintStore + dashboardStore)
+✓ HTTP: axios con proxy a http://localhost:8000
+
+Portal Ciudadano (/):
+✓ Wizard de 4 pasos: Servicio → Aspecto → Ubicación → Confirmar
+✓ Consume /core/services/, /core/aspects/, /core/communes/
+✓ POST a /urbaser/complaints/ con cascade GPS/manual/centroid
+✓ Modal con content.what_is / how_to_evidence
+✓ Pantalla de éxito con número de recibo
+□ Subida de evidencia (endpoint /urbaser/evidence/ sin integrar)
+□ Display completo de ServiceContent (full_description, citizen_rights)
+
+Dashboard Alcaldía (/dashboard):
+✓ Summary cards: total complaints, alerts, violations, compliance
+✓ Toggle servicio sweeping-cleaning / green-zones
+✓ Heatmap comunas (botones con color según violation_rate)
+✓ Tabla de alertas SLA con filtros
+□ Mapa real con polígonos de comunas (hoy son solo botones)
+□ Consumo de /complaints/geojson/ para mostrar denuncias en mapa
+
+Configuración:
+□ Variables .env (VITE_API_URL hardcoded al proxy)
+□ CORS_ALLOWED_ORIGINS backend debe incluir http://localhost:5173
 ```
 
 **Facturación**

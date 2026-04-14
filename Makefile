@@ -22,9 +22,12 @@ migrate:
 data:
 	uv run python manage.py loaddata fixtures/core_services.json
 	uv run python manage.py loaddata fixtures/core_aspects.json
+	uv run python manage.py loaddata fixtures/core_service_content.json
+	uv run python manage.py loaddata fixtures/core_aspect_content.json
 	uv run python manage.py load_communes
 	uv run python manage.py load_sweeping
 	uv run python manage.py load_green_zones
+	uv run python manage.py load_cutting_schedule
 
 # Denuncias de prueba para demo
 seed:

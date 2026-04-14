@@ -67,7 +67,19 @@ uv run python manage.py createsuperuser
 6. **Auditoría → Métricas de Comuna** (read-only)
    5 métricas. Mostrar `violation_rate` = 0.50 para Comuna 5 · green-zones.
 
-### 2. API — Bruno o curl
+### 2. Documentación interactiva Swagger
+
+Abrir en navegador: **`http://localhost:8000/api/docs/`**
+
+Swagger UI permite probar cualquier endpoint directamente desde el navegador sin necesidad de curl ni Bruno. Muestra:
+- Todos los parámetros de query
+- Schema de request/response
+- Ejemplos auto-generados
+- Botón "Try it out" para ejecutar en vivo
+
+Alternativa: `http://localhost:8000/api/redoc/` (ReDoc — mejor para lectura).
+
+### 3. API — Bruno o curl
 
 **Portal ciudadano (lectura de catálogo):**
 ```bash

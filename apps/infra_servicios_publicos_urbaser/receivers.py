@@ -107,10 +107,27 @@ def _process_sweeping(complaint_id, location, created_at, confidence, commune_id
         macro     = microroute.macroroute
         violation = False
 
-        if macro.start_time:
+        if macro.start_time and macro.end_time:
             start_hour = macro.start_time.hour
-            end_hour   = macro.end_time.hour if macro.end_time else 23
-            violation  = not (start_hour <= complaint_hour <= end_hour)
+            end_hour   = macro.end_time.hour
+
+            if start_hour <= end_hour:
+                # Ventana normal (ej: 06:00-14:00)
+                in_window = start_hour <= complaint_hour <= end_hour
+            else:
+                # Ventana que cruza medianoche (ej: 19:00-03:00)
+                in_window = complaint_hour >= start_hour or complaint_hour <= end_hour
+
+            violation = not in_window
+        elif macro.start_time:
+            # Sin end_time definido — fallback conservador: ventana de 8h
+            start_hour = macro.start_time.hour
+            end_hour   = (start_hour + 8) % 24
+            if start_hour <= end_hour:
+                in_window = start_hour <= complaint_hour <= end_hour
+            else:
+                in_window = complaint_hour >= start_hour or complaint_hour <= end_hour
+            violation = not in_window
 
         # Distancia en metros reales
         geom_m   = microroute.geom.transform(3116, clone=True)
