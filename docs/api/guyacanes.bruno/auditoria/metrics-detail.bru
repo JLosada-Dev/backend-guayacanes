@@ -1,0 +1,21 @@
+meta {
+  name: Detalle métrica comuna
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{base_url}}/api/v1/urbaser/metrics/1/
+  body: none
+  auth: none
+}
+
+docs {
+  Detalle de la métrica agregada de una comuna + servicio en un periodo.
+  Cambiar "1" por el ID real de la métrica.
+
+  Colores de heatmap según violation_rate:
+  - > 0.70 → rojo (crítico)
+  - > 0.40 → naranja (atención)
+  - ≤ 0.40 → verde (conforme)
+}

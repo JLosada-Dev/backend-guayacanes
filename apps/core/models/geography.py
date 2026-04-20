@@ -43,7 +43,7 @@ class Neighborhood(models.Model):
     )
     osm_id    = models.CharField(max_length=50, blank=True)
     dane_code = models.CharField(max_length=25, blank=True)
-    geom      = models.MultiPolygonField(srid=4326)
+    geom      = models.MultiPolygonField(srid=4326, null=True, blank=True)
 
     class Meta:
         db_table            = 'core_neighborhood'

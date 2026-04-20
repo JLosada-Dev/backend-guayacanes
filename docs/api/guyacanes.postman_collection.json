@@ -1,0 +1,131 @@
+{
+  "info": {
+    "name": "Guyacanes API v1",
+    "description": "Sistema de Supervisión Urbaser — Alcaldía de Popayán",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Core",
+      "item": [
+        {
+          "name": "Servicios activos",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/core/services/",
+            "description": "Retorna los servicios activos para el formulario ciudadano. Fase 1: sweeping-cleaning y green-zones."
+          }
+        },
+        {
+          "name": "Aspectos por servicio",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/core/aspects/?service=sweeping-cleaning",
+              "query": [
+                { "key": "service", "value": "sweeping-cleaning", "description": "Slug del servicio: sweeping-cleaning | green-zones" }
+              ]
+            },
+            "description": "Retorna los aspectos de queja filtrados por servicio."
+          }
+        },
+        {
+          "name": "Comunas",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/core/communes/",
+            "description": "Retorna las 9 comunas de Popayán."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Veeduría",
+      "item": [
+        {
+          "name": "Crear denuncia (GPS)",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/urbaser/complaints/",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"service_id\": 1,\n  \"aspect_id\": 4,\n  \"commune_id\": 4,\n  \"latitude\": 2.4411,\n  \"longitude\": -76.6051,\n  \"location_source\": \"gps\",\n  \"description\": \"Hay arenilla acumulada en la esquina desde hace tres días.\"\n}"
+            },
+            "description": "Crea una denuncia con coordenada GPS. location_source: gps | manual | centroid"
+          }
+        },
+        {
+          "name": "Crear denuncia (fallback centroide)",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/urbaser/complaints/",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"service_id\": 2,\n  \"aspect_id\": 8,\n  \"commune_id\": 3,\n  \"location_source\": \"centroid\",\n  \"description\": \"El césped del separador lleva más de 20 días sin cortar.\"\n}"
+            },
+            "description": "Sin GPS ni coordenadas — el sistema usa el centroide de la comuna como fallback."
+          }
+        },
+        {
+          "name": "Listar denuncias",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/urbaser/complaints/",
+              "query": [
+                { "key": "status", "value": "received", "disabled": true },
+                { "key": "service_slug", "value": "sweeping-cleaning", "disabled": true },
+                { "key": "commune_id", "value": "4", "disabled": true }
+              ]
+            },
+            "description": "Lista denuncias. Filtros disponibles: status, service_slug, commune_id, is_rural."
+          }
+        },
+        {
+          "name": "Detalle denuncia",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/urbaser/complaints/1/",
+            "description": "Detalle de una denuncia por ID."
+          }
+        },
+        {
+          "name": "Denuncias GeoJSON (mapa)",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/urbaser/complaints/geojson/",
+            "description": "Retorna denuncias como GeoJSON FeatureCollection para el mapa del dashboard."
+          }
+        },
+        {
+          "name": "Subir evidencia fotográfica",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/urbaser/evidence/",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "complaint", "value": "1", "type": "text" },
+                { "key": "image", "type": "file", "src": "" }
+              ]
+            },
+            "description": "Sube una foto adjunta a una denuncia existente. Usar form-data, no JSON."
+          }
+        }
+      ]
+    }
+  ]
+}

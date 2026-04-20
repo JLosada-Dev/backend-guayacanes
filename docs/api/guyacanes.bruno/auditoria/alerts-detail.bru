@@ -1,0 +1,23 @@
+meta {
+  name: Detalle alerta SLA
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{base_url}}/api/v1/urbaser/alerts/1/
+  body: none
+  auth: none
+}
+
+docs {
+  Detalle de una alerta SLA específica.
+  Cambiar "1" por el ID real de la alerta.
+
+  Campos clave:
+  - violation: true/false — si hay incumplimiento confirmado
+  - distance_meters: distancia en metros reales (EPSG:3116)
+  - days_since_intervention: solo zonas verdes
+  - confidence: high (GPS) / medium (manual) / low (centroide)
+  - macroroute_code: código oficial PPS (B211, 611, etc.)
+}

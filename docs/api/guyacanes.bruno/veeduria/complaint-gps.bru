@@ -1,0 +1,28 @@
+meta {
+  name: Crear denuncia GPS
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{base_url}}/api/v1/urbaser/complaints/
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "service_id": 1,
+    "aspect_id": 4,
+    "commune_id": 4,
+    "latitude": 2.4411,
+    "longitude": -76.6051,
+    "location_source": "gps",
+    "description": "Hay arenilla acumulada en la esquina desde hace tres días."
+  }
+}
+
+docs {
+  Crea denuncia con coordenada GPS.
+  location_source: gps | manual | centroid
+}

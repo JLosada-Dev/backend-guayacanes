@@ -1,0 +1,23 @@
+meta {
+  name: Aspectos por servicio
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{base_url}}/api/v1/core/aspects/
+  body: none
+  auth: none
+}
+
+params:query {
+  service: sweeping-cleaning
+}
+
+docs {
+  Aspectos activos con contenido informativo.
+  Parámetro service: sweeping-cleaning | green-zones
+  Campos: id, service_id, slug, description, content{
+    icon, what_is, how_to_evidence, response_time
+  }
+}

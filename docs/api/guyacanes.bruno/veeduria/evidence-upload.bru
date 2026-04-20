@@ -1,0 +1,27 @@
+meta {
+  name: Subir evidencia
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{base_url}}/api/v1/urbaser/evidence/
+  body: multipartForm
+  auth: none
+}
+
+body:multipart-form {
+  complaint: 1
+  image: @file()
+}
+
+docs {
+  Sube una foto de evidencia asociada a una denuncia existente.
+
+  Campos:
+  - complaint (integer): ID de la denuncia
+  - image (file): archivo JPG o PNG
+
+  La imagen se guarda en media_local/complaints/{año}/{mes}/
+  Retorna 201 con la URL absoluta de la imagen.
+}

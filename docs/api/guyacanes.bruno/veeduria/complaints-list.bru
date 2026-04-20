@@ -1,0 +1,22 @@
+meta {
+  name: Listar denuncias
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{base_url}}/api/v1/urbaser/complaints/
+  body: none
+  auth: none
+}
+
+params:query {
+  ~status: received
+  ~service_slug: sweeping-cleaning
+  ~commune_id: 4
+}
+
+docs {
+  Lista denuncias con filtros opcionales.
+  Filtros: status, service_slug, commune_id, is_rural
+}

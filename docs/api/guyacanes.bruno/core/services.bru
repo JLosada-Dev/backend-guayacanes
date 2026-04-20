@@ -1,0 +1,20 @@
+meta {
+  name: Servicios activos
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{base_url}}/api/v1/core/services/
+  body: none
+  auth: none
+}
+
+docs {
+  Servicios activos con contenido informativo.
+  El campo content viene null hasta que los líderes
+  de operaciones carguen el texto desde el admin.
+  Campos: id, name, slug, description, order, content{
+    icon, summary, full_description, frequency, citizen_rights
+  }
+}

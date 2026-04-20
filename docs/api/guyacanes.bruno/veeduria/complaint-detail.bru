@@ -1,0 +1,17 @@
+meta {
+  name: Detalle denuncia
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{base_url}}/api/v1/urbaser/complaints/1/
+  body: none
+  auth: none
+}
+
+docs {
+  Detalle de una denuncia por ID.
+  Incluye evidencias adjuntas y el location_source.
+  Cambiar el "1" en la URL por el ID real de la denuncia.
+}
