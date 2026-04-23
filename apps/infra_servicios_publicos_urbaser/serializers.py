@@ -70,29 +70,31 @@ class ComplaintSerializer(serializers.ModelSerializer):
                 {'aspect_id': 'Aspecto no encontrado o no pertenece al servicio.'}
             )
 
+        # ── Resolver nombre de comuna ─────────────────────────────
+        commune_id = data.get('commune_id')
+        if commune_id:
+            try:
+                commune = Commune.objects.get(id=commune_id)
+                data['commune_name'] = commune.name
+            except Commune.DoesNotExist:
+                raise serializers.ValidationError(
+                    {'commune_id': 'Comuna no encontrada.'}
+                )
+
         # ── Cascada de coordenada ─────────────────────────────────
         lat = data.pop('latitude', None)
         lng = data.pop('longitude', None)
 
         if lat is not None and lng is not None:
             data['location'] = Point(lng, lat, srid=4326)
-        else:
+        elif commune_id:
             # Fallback: centroide de la comuna
-            commune_id = data.get('commune_id')
-            if commune_id:
-                try:
-                    commune = Commune.objects.get(id=commune_id)
-                    data['commune_name'] = commune.name
-                    data['location']        = commune.geom.centroid
-                    data['location_source'] = 'centroid'
-                except Commune.DoesNotExist:
-                    raise serializers.ValidationError(
-                        {'commune_id': 'Comuna no encontrada.'}
-                    )
-            else:
-                raise serializers.ValidationError(
-                    {'location': 'Se requiere coordenada GPS o selección de comuna.'}
-                )
+            data['location']        = commune.geom.centroid
+            data['location_source'] = 'centroid'
+        else:
+            raise serializers.ValidationError(
+                {'location': 'Se requiere coordenada GPS o selección de comuna.'}
+            )
 
         return data
 

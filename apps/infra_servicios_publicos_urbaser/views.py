@@ -1,4 +1,5 @@
 from rest_framework import viewsets, mixins, status
+from rest_framework.permissions import AllowAny
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
@@ -68,6 +69,8 @@ class ComplaintViewSet(
     viewsets.GenericViewSet,
 ):
     """Denuncias ciudadanas de infraestructura de servicios públicos Urbaser."""
+    permission_classes  = [AllowAny]
+    authentication_classes = []
     queryset         = Complaint.objects.all().order_by('-created_at')
     serializer_class = ComplaintSerializer
     filter_backends  = [DjangoFilterBackend, SearchFilter, OrderingFilter]
@@ -206,6 +209,7 @@ class CommuneMetricViewSet(
     """Métricas pre-calculadas por comuna para el heatmap del dashboard."""
     queryset         = CommuneMetric.objects.all()
     serializer_class = CommuneMetricSerializer
+    pagination_class = None
     filter_backends  = [DjangoFilterBackend, OrderingFilter]
     filterset_fields = ['service_slug', 'period', 'commune_id']
     ordering_fields  = ['period', 'violation_rate', 'commune_id']
