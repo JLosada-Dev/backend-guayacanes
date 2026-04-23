@@ -2,6 +2,7 @@ from django.urls import path
 from rest_framework import serializers
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework_gis.serializers import GeoFeatureModelSerializer
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from drf_spectacular.types import OpenApiTypes
 
@@ -40,6 +41,13 @@ class CommuneSerializer(serializers.ModelSerializer):
     class Meta:
         model  = Commune
         fields = ['id', 'number', 'name', 'area_hectares']
+
+
+class CommuneGeoSerializer(GeoFeatureModelSerializer):
+    class Meta:
+        model     = Commune
+        geo_field = 'geom'
+        fields    = ['id', 'number', 'name', 'area_hectares']
 
 
 @extend_schema(
@@ -102,8 +110,25 @@ def communes_list(request):
     return Response(CommuneSerializer(communes, many=True).data)
 
 
+@extend_schema(
+    summary='Comunas en formato GeoJSON',
+    description=(
+        'Retorna las 9 comunas de Popayán como GeoJSON FeatureCollection '
+        'para renderizar polígonos en el mapa del dashboard.'
+    ),
+    responses=CommuneGeoSerializer(many=True),
+    tags=['Core / Catálogo'],
+)
+@api_view(['GET'])
+def communes_geojson(request):
+    communes = Commune.objects.all().order_by('number')
+    serializer = CommuneGeoSerializer(communes, many=True)
+    return Response(serializer.data)
+
+
 urlpatterns = [
-    path('services/', services_list,  name='services-list'),
-    path('aspects/',  aspects_list,   name='aspects-list'),
-    path('communes/', communes_list,  name='communes-list'),
+    path('services/',        services_list,   name='services-list'),
+    path('aspects/',         aspects_list,    name='aspects-list'),
+    path('communes/',        communes_list,   name='communes-list'),
+    path('communes/geojson/', communes_geojson, name='communes-geojson'),
 ]

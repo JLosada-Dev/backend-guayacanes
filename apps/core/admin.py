@@ -19,7 +19,8 @@ class NeighborhoodAdmin(admin.GISModelAdmin):
     ordering      = ['commune__number', 'name']
     search_fields = ['name']
     list_filter   = ['commune']
-    raw_id_fields = ['commune']
+    autocomplete_fields = ['commune']
+    exclude       = ['geom']
 
 
 class ServiceContentInline(admin.StackedInline):
