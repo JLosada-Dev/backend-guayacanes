@@ -69,11 +69,6 @@ auditoria/
   metrics-detail.bru        GET /metrics/{id}/
 ```
 
-### Importar en Postman
-1. Abrir Postman → Import → Upload Files
-2. Seleccionar `docs/api/guyacanes.postman_collection.json`
-3. Configurar variable `base_url` = `http://localhost:8000`
-
 ---
 
 ## Core — Catálogo

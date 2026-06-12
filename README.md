@@ -468,7 +468,7 @@ Acceso con superuser (`createsuperuser`). Permite gestionar manualmente todos lo
 | [`docs/refactor/SECTION-REGISTRY.md`](docs/refactor/SECTION-REGISTRY.md) | Diseño del registry de servicios (V2.1)        |
 | [`docs/refactor/REGISTRY-PATTERN.md`](docs/refactor/REGISTRY-PATTERN.md) | Patrón ServiceProvider Protocol                |
 | [`docs/refactor/EVENTS.md`](docs/refactor/EVENTS.md)          | Contrato del evento `complaint_created`                  |
-| [`docs/api/`](docs/api/)                                      | Colecciones Bruno y Postman para probar la API           |
+| [`docs/api/`](docs/api/)                                      | Colección Bruno para probar la API                       |
 
 ---
 

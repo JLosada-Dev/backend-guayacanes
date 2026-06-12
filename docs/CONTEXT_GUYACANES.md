@@ -4,6 +4,12 @@
 
 # Versión definitiva — Abril 2026
 
+> ⚠️ **Nota (post-refactor V2):** este documento describe la arquitectura
+> original de Fase A. Tras el refactor V2, `Service`/`Aspect` viven en la app
+> urbaser (no en `core`), existe `core.Section` con patrón registry, y las
+> denuncias/alertas/métricas viven en la app `veeduria`. Para la arquitectura
+> vigente ver `docs/refactor/` y para el progreso `docs/estado-actual.md`.
+
 ---
 
 ## ROL DE ESTE CHAT
@@ -105,7 +111,7 @@ otra app. Solo se escribe al cargar datos iniciales.
 core/
   models/
     geography.py    ← Commune + Neighborhood
-    catalog.py      ← Service + Aspect
+    section.py      ← Section (V2; Service + Aspect se movieron a urbaser)
 ```
 
 ### Prefijos de tabla: core\_\*
@@ -539,7 +545,6 @@ load_neighborhoods  ← shapefile DANE MGN → core_neighborhood                
 ```
 ✓ README.md (setup, API summary, filtros, referencia docs)
 ✓ docs/api/README.md (referencia completa API v1 — filtros, ejemplos, campos choice)
-✓ docs/api/guyacanes.postman_collection.json
 ✓ docs/api/guyacanes.bruno/ (colección Bruno completa)
 ✓ docs/admin-guide.md (guía completa del panel admin — inlines, permisos, fieldsets)
 ✓ docs/rutas-y-servicios.md (contexto de negocio PPS 2024)
