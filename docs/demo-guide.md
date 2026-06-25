@@ -26,8 +26,8 @@ make demo
 | Recurso | Cantidad | Origen |
 |---------|----------|--------|
 | Comunas | 9 | `U2_COMUNAS.shp` |
-| Servicios | 5 (2 activos Fase 1) | `fixtures/core_services.json` |
-| Aspectos | 11 | `fixtures/core_aspects.json` |
+| Servicios | 5 (2 activos Fase 1) | `apps/infra_servicios_publicos_urbaser/fixtures/services.json` |
+| Aspectos | 11 | `apps/infra_servicios_publicos_urbaser/fixtures/aspects.json` |
 | Macrorutas de barrido | 8 | `U18_VIAL.shp` + datos PPS 2024 |
 | Microrutas de barrido | 1,731 | `U18_VIAL.shp` |
 | Zonas verdes | 313 | 5 shapefiles U-19 + SEPARADOR |

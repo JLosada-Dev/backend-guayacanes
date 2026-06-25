@@ -243,9 +243,11 @@ Registro de intervenciones ejecutadas (cortes reales realizados por Urbaser).
 ```bash
 python manage.py migrate
 python manage.py createsuperuser
-python manage.py loaddata fixtures/core_services.json
-python manage.py loaddata fixtures/core_aspects.json
+python manage.py loaddata apps/core/fixtures/sections.json
+python manage.py loaddata apps/infra_servicios_publicos_urbaser/fixtures/services.json
+python manage.py loaddata apps/infra_servicios_publicos_urbaser/fixtures/aspects.json
 python manage.py load_communes
+python manage.py load_neighborhoods
 python manage.py load_sweeping
 ```
 
