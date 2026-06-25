@@ -161,7 +161,7 @@ make demo
 | Feature | Estado | Justificación |
 |---------|--------|---------------|
 | Autenticación JWT | Pendiente | Se agrega post-demo. Demo interno no requiere auth. |
-| Frontend React | Pendiente template | Se muestra el backend con admin + Bruno/Postman. |
+| Frontend React | Pendiente template | Se muestra el backend con admin + Bruno. |
 | Barrios con geometría | null | No bloquea: fallback a centroide de comuna. Ver `docs/barrios-opciones.md`. |
 | Facturación | Fase 2 | Fuera de alcance. |
 | Recolección de basura | Fase 2 | Fuera de alcance. |

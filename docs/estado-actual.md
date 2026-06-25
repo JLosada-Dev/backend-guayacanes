@@ -1,7 +1,7 @@
 # Estado Actual del Proyecto
 
 **Fecha:** 14 abril 2026
-**Propósito:** fuente única de verdad del progreso. Consolida `plan-accion-fase1.md`, `plan-demo-completo.md`, `changelog-fase-a.md` y `frontend-changelog.md`.
+**Propósito:** fuente única de verdad del progreso. Consolida los planes y changelogs de Fase A (`plan-accion-fase1`, `plan-demo-completo`, `changelog-fase-a`, hoy eliminados — su historia vive en git) y `frontend-changelog.md`.
 
 ---
 
@@ -114,9 +114,6 @@ docs/geodatos.md             inventario shapefiles + CRS + commands
 docs/guia-dependencias.md    setup uv + GDAL + VS Code
 docs/rutas-y-servicios.md    contexto de negocio PPS 2024
 docs/barrios-opciones.md     opciones para cargar barrios
-docs/plan-accion-fase1.md    gaps, pendientes, info faltante
-docs/plan-demo-completo.md   integración backend + frontend
-docs/changelog-fase-a.md     changelog backend Fase A
 docs/frontend-changelog.md   changelog frontend granular
 docs/estado-actual.md        este archivo
 ```

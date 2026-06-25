@@ -36,9 +36,7 @@ Los siguientes docs son del **sistema completo** (backend + frontend + infra + n
 
 - `docs/CONTEXT_GUYACANES.md` — arquitectura global
 - `docs/estado-actual.md` — fuente única de verdad consolidada
-- `docs/plan-accion-fase1.md` — gaps, pendientes, info externa
-- `docs/plan-demo-completo.md` — integración backend + frontend
-- `docs/changelog-fase-a.md` — changelog del backend
+- `docs/refactor/` — diseño de la arquitectura V2 (Section + Registry, eventos)
 - `docs/admin-guide.md` · `docs/demo-guide.md` · `docs/rutas-y-servicios.md` · etc.
 
 El `README.md` del frontend hace referencias explícitas a estos archivos en el repo backend:

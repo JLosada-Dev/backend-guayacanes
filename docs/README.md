@@ -1,18 +1,53 @@
 # Guyacanes — Documentación del equipo
 
-Sistema de supervisión de servicios públicos de aseo urbano — Alcaldía de Popayán / Urbaser.
+Sistema de supervisión y veeduría ciudadana de servicios públicos — Alcaldía de Popayán / Urbaser.
 
 ---
 
 ## Índice
 
+### Estado y contexto
+
 | Documento | Qué contiene |
 |-----------|-------------|
-| [CONTEXT_GUYACANES.md](CONTEXT_GUYACANES.md) | Arquitectura completa: modelos, signals, flujos, estado actual |
-| [guia-dependencias.md](guia-dependencias.md) | Setup local paso a paso (uv, GDAL, Docker, local.py) |
-| [geodatos.md](geodatos.md) | Inventario de shapefiles POT — cuáles están cargados, cuáles pendientes y cómo cargarlos |
-| [rutas-y-servicios.md](rutas-y-servicios.md) | Contexto de negocio: 8 macrorutas de barrido, 35 de recolección, 290 zonas verdes, SLA |
-| [api/README.md](api/README.md) | Endpoints v1 + cómo importar colecciones Bruno / Postman |
+| [estado-actual.md](estado-actual.md) | **Fuente única de verdad del progreso** — completado vs pendiente |
+| [CONTEXT_GUYACANES.md](CONTEXT_GUYACANES.md) | Contexto completo de Fase A: modelos, signals, flujos (ver nota V2 al inicio) |
+| [rutas-y-servicios.md](rutas-y-servicios.md) | Contexto de negocio: contrato PPS 2024, macrorutas, zonas verdes, SLA |
+
+### Arquitectura V2 (`refactor/`)
+
+| Documento | Qué contiene |
+|-----------|-------------|
+| [refactor/ARQUITECTURA-V2.md](refactor/ARQUITECTURA-V2.md) | Diseño multiapp: core, geodata, veeduria, urbaser |
+| [refactor/SECTION-REGISTRY.md](refactor/SECTION-REGISTRY.md) | Section en core + ownership de Service/Aspect por app |
+| [refactor/REGISTRY-PATTERN.md](refactor/REGISTRY-PATTERN.md) | Patrón de handlers SLA vía signal `complaint_created` |
+| [refactor/EVENTS.md](refactor/EVENTS.md) | Contrato del evento serializable (futuro Kafka) |
+| [refactor/MAPA-MODELOS.md](refactor/MAPA-MODELOS.md) | Mapa de migración de modelos V1 → V2 |
+
+### Operación y setup
+
+| Documento | Qué contiene |
+|-----------|-------------|
+| [guia-dependencias.md](guia-dependencias.md) | Setup local paso a paso (uv, GDAL, Docker, VS Code) |
+| [entorno-python-gdal.md](entorno-python-gdal.md) | Por qué hay varios Pythons en el sistema y cómo limpiar |
+| [demo-guide.md](demo-guide.md) | Recorrido paso a paso para correr la demo |
+| [admin-guide.md](admin-guide.md) | Guía del panel admin: inlines, fieldsets, flujo operacional |
+| [api/README.md](api/README.md) | Referencia de endpoints v1 + colección Bruno |
+
+### Datos
+
+| Documento | Qué contiene |
+|-----------|-------------|
+| [geodatos.md](geodatos.md) | Inventario de shapefiles POT, CRS y comandos de carga |
+| [barrios-opciones.md](barrios-opciones.md) | Opciones evaluadas para cargar geometrías de barrios |
+| Comunas-Popayán.pdf | Documento fuente de las comunas de Popayán |
+
+### Meta
+
+| Documento | Qué contiene |
+|-----------|-------------|
+| [estrategia-documentacion.md](estrategia-documentacion.md) | Cómo se reparte la documentación entre los dos repos |
+| [frontend-changelog.md](frontend-changelog.md) | Changelog del frontend (copia de `frontend-guayacanes/CHANGELOG.md`) |
 
 ---
 
@@ -22,42 +57,41 @@ Sistema de supervisión de servicios públicos de aseo urbano — Alcaldía de P
 # 1. Dependencias Python
 uv sync
 
-# 2. Base de datos
-docker compose up -d
+# 2. Base de datos + servidor (espera a PostgreSQL)
+make dev
 
-# 3. Settings locales (copiar y editar rutas GDAL)
-cp config/settings/local.py.example config/settings/local.py   # si existe
-# o crear manualmente — ver guia-dependencias.md
+# En otra terminal:
 
-# 4. Migraciones + fixtures de catálogo
-uv run python manage.py migrate
-uv run python manage.py loaddata fixtures/core_services.json
-uv run python manage.py loaddata fixtures/core_aspects.json
+# 3. Migraciones + fixtures + geodatos
+make reset
 
-# 5. Cargar comunas desde shapefile
-uv run python manage.py load_communes
+# 4. Datos de demo (denuncias seed → alertas → métricas)
+make demo
 
-# 6. Superusuario
+# 5. Superusuario
 uv run python manage.py createsuperuser
-
-# 7. Servidor
-uv run python manage.py runserver 0.0.0.0:8000
 ```
 
 Admin: http://localhost:8000/admin
 API: http://localhost:8000/api/v1/
+Swagger: http://localhost:8000/api/docs/
+
+Detalle de GDAL y `local.py` en [guia-dependencias.md](guia-dependencias.md).
 
 ---
 
 ## Estado del proyecto
 
-| Módulo | Estado | Notas |
-|--------|--------|-------|
-| `core` — Catálogo | ✓ Completo | 5 servicios, 11 aspectos, 9 comunas cargadas |
-| `infra_servicios_publicos_urbaser` — Veeduría | ✓ Completo | Complaint + Evidence, API v1 activa |
-| `infra_servicios_publicos_urbaser` — Operaciones | Pendiente | SweepingMacroRoute, GreenZone — ver CONTEXT |
-| `infra_servicios_publicos_urbaser` — Auditoría | Pendiente | SLAAlert, CommuneMetric — ver CONTEXT |
-| Frontend React + Vite | Pendiente | Esperando template |
+Ver [estado-actual.md](estado-actual.md) — fuente única de verdad. Resumen:
+
+| Módulo | Estado |
+|--------|--------|
+| `core` — Section, geografía | ✓ Completo |
+| `geodata` — espacios públicos POT | ✓ Completo |
+| `veeduria` — denuncias, alertas SLA, métricas | ✓ Completo |
+| `infra_servicios_publicos_urbaser` — catálogo y operaciones | ✓ Completo |
+| Frontend React + Vite | ✓ Portal ciudadano + dashboard supervisor |
+| Barrios (geometrías) | Pendiente — sin shapefile, ver [barrios-opciones.md](barrios-opciones.md) |
 
 ---
 
